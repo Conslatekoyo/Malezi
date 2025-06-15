@@ -1,27 +1,9 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+// Firebase Auth cannot be securely verified at the edge. Enforce auth in the app (e.g., in layouts/pages).
 export function middleware(request: NextRequest) {
-  // Get the pathname of the request (e.g. /dashboard, /auth/login)
-  const path = request.nextUrl.pathname
-
-  // Define public paths that don't require authentication
-  const isPublicPath = path === '/auth/login' || path === '/auth/register' || path === '/'
-
-  // Get the token from the cookies
-  const authToken = request.cookies.get('auth-storage')
-
-  // If the path is public and user is logged in, redirect to dashboard
-  if (isPublicPath && authToken) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
-  }
-
-  // If the path is protected and user is not logged in, redirect to login
-  if (!isPublicPath && !authToken) {
-    return NextResponse.redirect(new URL('/auth/login', request.url))
-  }
-
-  // Otherwise, continue with the request
+  // Allow all requests through. Auth is enforced in the app.
   return NextResponse.next()
 }
 

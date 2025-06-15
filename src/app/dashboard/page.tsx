@@ -59,7 +59,7 @@ export default function DashboardPage() {
   }, [user])
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 bg-background">
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
         <p className="text-muted-foreground">

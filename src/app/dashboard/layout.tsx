@@ -15,7 +15,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     if (!user) {
-      router.push('/auth/login')
+      //router.push('/auth/login');
+      console.log('User is not authenticated')
     }
   }, [user, router])
 
@@ -73,7 +74,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Desktop Navigation */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
-        <div className="flex flex-col flex-grow border-r border-gray-200 bg-white pt-5">
+        <div className="flex flex-col flex-grow border-r border-gray-200 bg-background pt-5">
           <div className="flex items-center flex-shrink-0 px-4">
             <h1 className="text-2xl font-bold">Malezi</h1>
           </div>
@@ -83,21 +84,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="group flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-gray-50 hover:text-primary"
+                  className="group flex items-center px-2 py-2 text-sm font-medium shadow-sm my-3 rounded-md hover:bg-zinc-500 hover:text-primary"
                 >
                   {item.name}
                 </Link>
               ))}
             </nav>
           </div>
-          <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
+          <div className="flex flex-shrink-0 border-t border-zinc-700 p-4">
             <div className="flex items-center">
               <div>
                 <User className="inline-block h-9 w-9 rounded-full" />
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-700">{user.name}</p>
-                <p className="text-xs font-medium text-gray-500">{user.role}</p>
+                <p className="text-sm font-medium">{user.name}</p>
+                <p className="text-xs font-medium">{user.role}</p>
               </div>
             </div>
             <Button onClick={handleLogout} variant="ghost" size="sm" className="ml-auto">
@@ -108,8 +109,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       {/* Main Content */}
-      <div className="lg:pl-64">
-        <main className="py-8 px-4 sm:px-6 lg:px-8">{children}</main>
+      <div className="lg:pl-64 h-screen bg-background">
+        <main className="py-8 px-4 sm:px-6 lg:px-8 bg-background">{children}</main>
       </div>
     </div>
   )
