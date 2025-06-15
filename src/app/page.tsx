@@ -1,64 +1,59 @@
+"use client"
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Baby, Calendar, Shield, Stethoscope } from 'lucide-react'
-
+import { motion } from 'framer-motion'
+import StarsBg from '@/components/StarsBg'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="px-4 lg:px-6 h-14 flex items-center">
-        <Link className="flex items-center justify-center" href="/">
-          <Image
-            src="/icons/logo.svg"
-            alt="Malezi Logo"
-            width={32}
-            height={32}
-            className="mr-2"
-          />
-          <span className="text-2xl font-bold">Malezi</span>
-        </Link>
-        <nav className="ml-auto flex items-center gap-4 sm:gap-6">
-          <ThemeToggle />
-          <Link
-            className="text-sm font-medium hover:underline underline-offset-4"
-            href="/auth/login"
-          >
-            Sign In
-          </Link>
-          <Link
-            className="text-sm font-medium hover:underline underline-offset-4"
-            href="/auth/register"
-          >
-            Register
-          </Link>
-        </nav>
-      </header>
-      <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
+    <div className="relative flex flex-col min-h-screen overflow-x-hidden bg-gradient-to-br from-pink-50 via-blue-50 to-purple-100 dark:from-indigo-900 dark:via-blue-950 dark:to-fuchsia-950 transition-colors duration-500">
+      <StarsBg />
+      <main className="flex-1 z-10">
+        <motion.section
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="relative w-full py-12 md:py-24 lg:py-32 xl:py-48 flex flex-col justify-center items-center"
+        >
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.7 }}
+                  className="text-4xl sm:text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-pink-400 via-blue-400 to-purple-400 bg-clip-text text-transparent drop-shadow-lg"
+                >
                   Track Your Child's Health Journey
-                </h1>
-                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
-                  Secure, comprehensive medical record keeping for your child from birth to age 5.
-                  Everything you need in one place.
-                </p>
+                </motion.h1>
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.7 }}
+                  className="mx-auto max-w-[700px] text-blue-600 dark:text-blue-200 md:text-xl font-medium"
+                >
+                  Secure, comprehensive medical record keeping for your child from birth to age 5. Everything you need in one place.
+                </motion.p>
               </div>
-              <div className="space-x-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+                className="space-x-4"
+              >
                 <Link href="/auth/register">
-                  <Button>
+                  <Button className="bg-gradient-to-r from-pink-300 via-blue-300 to-purple-300 text-white shadow-lg hover:from-pink-400 hover:to-purple-400">
                     Get Started
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRight className="ml-2 h-4 w-4 text-purple-600" />
                   </Button>
                 </Link>
-              </div>
+              </motion.div>
             </div>
           </div>
-        </section>
+        </motion.section>
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-4 lg:gap-12">

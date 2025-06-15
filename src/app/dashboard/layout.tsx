@@ -36,7 +36,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-blue-50 to-purple-100 dark:from-indigo-900 dark:via-blue-950 dark:to-fuchsia-950 transition-colors duration-500">
       {/* Mobile Navigation */}
       <Sheet>
         <SheetTrigger asChild>
@@ -44,8 +44,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Menu className="h-6 w-6" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-64">
+        <SheetContent side="left" className="w-64 bg-gradient-to-b from-pink-100 via-blue-100 to-purple-100 dark:from-indigo-950 dark:via-blue-950 dark:to-fuchsia-950">
           <div className="flex flex-col h-full">
+  <div className="flex items-center gap-2 px-3 pb-2">
+    <User className="h-8 w-8 text-pink-400 dark:text-pink-200" />
+    <span className="font-bold text-lg text-blue-700 dark:text-blue-200">Malezi</span>
+  </div>
             <div className="space-y-4 py-4">
               <div className="px-3 py-2">
                 <h2 className="mb-2 px-4 text-lg font-semibold">Navigation</h2>
@@ -76,7 +80,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
         <div className="flex flex-col flex-grow border-r border-zinc-700 bg-background pt-5">
           <div className="flex items-center flex-shrink-0 px-4">
-            <h1 className="text-2xl font-bold">Malezi</h1>
+            <Link href="/" className="text-2xl font-bold">Malezi</Link>
           </div>
           <div className="mt-8 flex flex-1 flex-col">
             <nav className="flex-1 space-y-1 px-2">

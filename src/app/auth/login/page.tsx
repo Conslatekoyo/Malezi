@@ -44,7 +44,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center">Welcome Back</CardTitle>
@@ -109,9 +109,11 @@ export default function LoginPage() {
               }}
               disabled={isLoading}
             >
-              <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24"><path fill="currentColor" d="M21.8 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.6c-.2 1.1-.9 2-1.8 2.6v2.2h2.9c1.7-1.5 2.7-3.7 2.7-6.6z"/><path fill="currentColor" d="M12 22c2.4 0 4.4-.8 5.9-2.1l-2.9-2.2c-.8.5-1.8.8-3 .8-2.3 0-4.3-1.5-5-3.6H3v2.3C4.5 20.5 7 22 12 22z"/><path fill="currentColor" d="M6.9 13.1c-.2-.5-.3-1-.3-1.6s.1-1.1.3-1.6V7.6H3.9C3.3 8.8 3 10.1 3 11.5s.3 2.7.9 3.9l3-2.3z"/><path fill="currentColor" d="M12 5.5c1.3 0 2.5.4 3.4 1.3l2.5-2.5C16.4 2.8 14.4 2 12 2 7 2 4.5 3.5 3 5.6l3 2.3c.7-2.1 2.7-3.6 5-3.6z"/></svg>
-              Sign in with Google
+
+ <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><g clipPath="url(#clip0_17_40)"><path d="M47.532 24.552c0-1.636-.147-3.2-.42-4.704H24.48v9.12h12.96c-.56 2.96-2.24 5.44-4.784 7.12v5.92h7.76c4.56-4.2 7.112-10.4 7.112-17.456z" fill="#4285F4"/><path d="M24.48 48c6.48 0 11.92-2.16 15.92-5.888l-7.76-5.92c-2.16 1.44-4.96 2.32-8.16 2.32-6.24 0-11.52-4.216-13.408-9.872H3.6v6.08C7.6 43.2 15.44 48 24.48 48z" fill="#34A853"/><path d="M11.072 28.64a13.44 13.44 0 0 1 0-8.576v-6.08H3.6A23.976 23.976 0 0 0 0 24c0 3.92.96 7.616 2.64 10.896l7.76-6.256z" fill="#FBBC05"/><path d="M24.48 9.6c3.52 0 6.656 1.216 9.12 3.6l6.8-6.8C36.4 2.16 30.96 0 24.48 0 15.44 0 7.6 4.8 3.6 12l7.76 6.08c1.888-5.656 7.168-9.872 13.12-9.872z" fill="#EA4335"/></g><defs><clipPath id="clip0_17_40"><path fill="#fff" d="M0 0h48v48H0z"/></clipPath></defs></svg>
+              Sign up with Google
             </Button>
+               
           </div>
         </CardContent>
         <CardFooter className="flex justify-center">
