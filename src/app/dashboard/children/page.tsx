@@ -1,26 +1,40 @@
 "use client"
 import { useState } from "react"
 import { db } from '@/lib/firebase'
-import { collection, addDoc } from 'firebase/firestore'
+import { addDoc } from 'firebase/firestore'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/useAuth'
+import { useEffect } from 'react'
+import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from '@/components/ui/table'
+import { toast } from 'sonner'
+import { collection, query, where, getDocs } from 'firebase/firestore'
 
 export default function ChildrenPage() {
   const { user } = useAuth()
   const [name, setName] = useState("")
   const [dob, setDob] = useState("")
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState("")
-  const [error, setError] = useState("")
+  const [children, setChildren] = useState<any[]>([])
+
+  useEffect(() => {
+    if (!user) return
+    async function fetchChildren() {
+      if (!user) return
+      const q = user.role === 'parent'
+        ? query(collection(db, 'children'), where('parentId', '==', user.id))
+        : collection(db, 'children')
+      const snap = await getDocs(q)
+      setChildren(snap.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })))
+    }
+    fetchChildren()
+  }, [user])
 
   async function handleAddChild(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
-    setSuccess("")
-    setError("")
     if (!user) {
-      setError('You must be logged in to add a child.')
+      toast.error('You must be logged in to add a child.')
       return
     }
     try {
@@ -31,11 +45,18 @@ export default function ChildrenPage() {
         createdAt: new Date(),
         updatedAt: new Date(),
       })
-      setSuccess("Child added!")
+      toast.success('Child added!')
       setName("")
       setDob("")
+      // Refresh children list
+      if (!user) return
+      const q = user.role === 'parent'
+        ? query(collection(db, 'children'), where('parentId', '==', user.id))
+        : collection(db, 'children')
+      const snap = await getDocs(q)
+      setChildren(snap.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })))
     } catch (err: any) {
-      setError(err.message)
+      toast.error(err.message)
     } finally {
       setLoading(false)
     }
@@ -49,8 +70,31 @@ export default function ChildrenPage() {
         <Input type="date" value={dob} onChange={e => setDob(e.target.value)} required />
         <Button type="submit" disabled={loading}>{loading ? "Adding..." : "Add Child"}</Button>
       </form>
-      {success && <div className="text-green-600 mt-2">{success}</div>}
-      {error && <div className="text-red-600 mt-2">{error}</div>}
+      <div className="mt-8">
+        <h3 className="font-semibold mb-2">Children List</h3>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Date of Birth</TableHead>
+              <TableHead>ID</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {children.length === 0 ? (
+              <TableRow><TableCell colSpan={3}>No children found.</TableCell></TableRow>
+            ) : (
+              children.map(child => (
+                <TableRow key={child.id}>
+                  <TableCell>{child.name}</TableCell>
+                  <TableCell>{child.dateOfBirth}</TableCell>
+                  <TableCell>{child.id}</TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
 )
 }

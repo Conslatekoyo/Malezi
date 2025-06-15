@@ -1,10 +1,14 @@
 "use client"
 import { useState } from "react"
 import { db } from '@/lib/firebase'
-import { collection, addDoc } from 'firebase/firestore'
+import { addDoc } from 'firebase/firestore'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/useAuth'
+import { useEffect } from 'react'
+import { Table, TableHeader, TableBody, TableRow, TableCell, TableHead } from '@/components/ui/table'
+import { toast } from 'sonner'
+import { collection, query, where, getDocs } from 'firebase/firestore'
 
 export default function RecordsPage() {
   const { user } = useAuth()
@@ -12,16 +16,26 @@ export default function RecordsPage() {
   const [condition, setCondition] = useState("")
   const [date, setDate] = useState("")
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState("")
-  const [error, setError] = useState("")
+  const [records, setRecords] = useState<any[]>([])
+
+  useEffect(() => {
+    if (!user) return
+    async function fetchRecords() {
+      if (!user) return
+      const q = user.role === 'parent'
+        ? query(collection(db, 'medical_records'), where('createdBy', '==', user.id))
+        : collection(db, 'medical_records')
+      const snap = await getDocs(q)
+      setRecords(snap.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })))
+    }
+    fetchRecords()
+  }, [user])
 
   async function handleAddRecord(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
-    setSuccess("")
-    setError("")
     if (!user) {
-      setError('You must be logged in to add a record.')
+      toast.error('You must be logged in to add a record.')
       return
     }
     try {
@@ -33,12 +47,19 @@ export default function RecordsPage() {
         createdAt: new Date(),
         updatedAt: new Date(),
       })
-      setSuccess("Medical record added!")
+      toast.success('Medical record added!')
       setChildId("")
       setCondition("")
       setDate("")
+      // Refresh records
+      if (!user) return
+      const q = user.role === 'parent'
+        ? query(collection(db, 'medical_records'), where('createdBy', '==', user.id))
+        : collection(db, 'medical_records')
+      const snap = await getDocs(q)
+      setRecords(snap.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })))
     } catch (err: any) {
-      setError(err.message)
+      toast.error(err.message)
     } finally {
       setLoading(false)
     }
@@ -53,8 +74,33 @@ export default function RecordsPage() {
         <Input type="date" value={date} onChange={e => setDate(e.target.value)} required />
         <Button type="submit" disabled={loading}>{loading ? "Adding..." : "Add Record"}</Button>
       </form>
-      {success && <div className="text-green-600 mt-2">{success}</div>}
-      {error && <div className="text-red-600 mt-2">{error}</div>}
+      <div className="mt-8">
+        <h3 className="font-semibold mb-2">Medical Records</h3>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Child ID</TableHead>
+              <TableHead>Condition</TableHead>
+              <TableHead>Diagnosis Date</TableHead>
+              <TableHead>ID</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {records.length === 0 ? (
+              <TableRow><TableCell colSpan={4}>No records found.</TableCell></TableRow>
+            ) : (
+              records.map(record => (
+                <TableRow key={record.id}>
+                  <TableCell>{record.childId}</TableCell>
+                  <TableCell>{record.condition}</TableCell>
+                  <TableCell>{record.diagnosisDate}</TableCell>
+                  <TableCell>{record.id}</TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
 )
 }
