@@ -5,7 +5,8 @@ import { Calendar, TrendingUp, Syringe, Stethoscope } from 'lucide-react'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/hooks/useAuth'
-import { db } from '@/lib/db/mockDb'
+import { db } from '@/lib/firebase'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 import { Child, VaccinationRecord, GrowthRecord, DoctorVisit } from '@/types'
 
 export default function DashboardPage() {
@@ -22,30 +23,44 @@ export default function DashboardPage() {
     const loadDashboardData = async () => {
       if (!user) return
 
-      // Load children for the logged-in parent
-      const userChildren = await db.findMany('children', 
-        user.role === 'parent' ? { parentId: user.id } : undefined
-      )
+      // Fetch children
+      let childrenSnapshot
+      if (user.role === 'parent') {
+        childrenSnapshot = await getDocs(query(collection(db, 'children'), where('parentId', '==', user.id)))
+      } else {
+        childrenSnapshot = await getDocs(collection(db, 'children'))
+      }
+      const userChildren: Child[] = childrenSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Child))
       setChildren(userChildren)
+      const childrenIds = userChildren.map((child: Child) => child.id)
 
-      // Calculate stats
-      const childrenIds = userChildren.map(child => child.id)
-      
-      const vaccinations = await db.findMany('vaccinations')
-      const filteredVaccinations = vaccinations.filter(v => childrenIds.includes(v.childId))
-      
-      const upcomingVacs = filteredVaccinations.filter(v => {
+      // Fetch vaccinations
+      const vaccinationsSnapshot = await getDocs(collection(db, 'vaccinations'))
+      const vaccinations: VaccinationRecord[] = vaccinationsSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as VaccinationRecord))
+      const filteredVaccinations = user.role === 'parent'
+        ? vaccinations.filter((v: VaccinationRecord) => childrenIds.includes(v.childId))
+        : vaccinations
+
+      const upcomingVacs = filteredVaccinations.filter((v: VaccinationRecord) => {
         if (!v.nextDueDate) return false
         const dueDate = new Date(v.nextDueDate)
         const today = new Date()
         return dueDate > today && dueDate <= new Date(today.setMonth(today.getMonth() + 1))
       })
 
-      const growthRecords = await db.findMany('growthRecords')
-      const filteredGrowthRecords = growthRecords.filter(g => childrenIds.includes(g.childId))
+      // Fetch growth records
+      const growthSnapshot = await getDocs(collection(db, 'growth_records'))
+      const growthRecords: GrowthRecord[] = growthSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as GrowthRecord))
+      const filteredGrowthRecords = user.role === 'parent'
+        ? growthRecords.filter((g: GrowthRecord) => childrenIds.includes(g.childId))
+        : growthRecords
 
-      const doctorVisits = await db.findMany('doctorVisits')
-      const filteredDoctorVisits = doctorVisits.filter(d => childrenIds.includes(d.childId))
+      // Fetch doctor visits
+      const doctorSnapshot = await getDocs(collection(db, 'doctorVisits'))
+      const doctorVisits: DoctorVisit[] = doctorSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as DoctorVisit))
+      const filteredDoctorVisits = user.role === 'parent'
+        ? doctorVisits.filter((d: DoctorVisit) => childrenIds.includes(d.childId))
+        : doctorVisits
 
       setStats({
         totalVaccinations: filteredVaccinations.length,

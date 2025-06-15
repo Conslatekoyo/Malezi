@@ -74,7 +74,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Desktop Navigation */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
-        <div className="flex flex-col flex-grow border-r border-gray-200 bg-background pt-5">
+        <div className="flex flex-col flex-grow border-r border-zinc-700 bg-background pt-5">
           <div className="flex items-center flex-shrink-0 px-4">
             <h1 className="text-2xl font-bold">Malezi</h1>
           </div>
